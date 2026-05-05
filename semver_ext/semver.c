@@ -62,3 +62,42 @@ Datum semver_out(PG_FUNCTION_ARGS)
 
     PG_RETURN_CSTRING(buf);
 }
+/* semver_compare: internal helper, not registered in SQL */
+static int
+semver_compare(Semver *a, Semver *b)
+{
+    if (a->major != b->major)
+        return (a->major > b->major) ? 1 : -1;
+    if (a->minor != b->minor)
+        return (a->minor > b->minor) ? 1 : -1;
+    if (a->patch != b->patch)
+        return (a->patch > b->patch) ? 1 : -1;
+    return 0;
+}
+
+/* semver_lt: less than */
+PG_FUNCTION_INFO_V1(semver_lt);
+Datum semver_lt(PG_FUNCTION_ARGS)
+{
+    Semver *a = (Semver *) PG_GETARG_POINTER(0);
+    Semver *b = (Semver *) PG_GETARG_POINTER(1);
+    PG_RETURN_BOOL(semver_compare(a, b) < 0);
+}
+
+/* semver_le: less than or equal */
+PG_FUNCTION_INFO_V1(semver_le);
+Datum semver_le(PG_FUNCTION_ARGS)
+{
+    Semver *a = (Semver *) PG_GETARG_POINTER(0);
+    Semver *b = (Semver *) PG_GETARG_POINTER(1);
+    PG_RETURN_BOOL(semver_compare(a, b) <= 0);
+}
+
+/* semver_eq: equal */
+PG_FUNCTION_INFO_V1(semver_eq);
+Datum semver_eq(PG_FUNCTION_ARGS)
+{
+    Semver *a = (Semver *) PG_GETARG_POINTER(0);
+    Semver *b = (Semver *) PG_GETARG_POINTER(1);
+    PG_RETURN_BOOL(semver_compare(a, b) == 0);
+}

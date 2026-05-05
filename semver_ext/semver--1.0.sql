@@ -18,3 +18,43 @@ CREATE TYPE semver (
     INTERNALLENGTH = 12,
     ALIGNMENT = int4
 );
+-- Phase 2: Ezzah -- comparison functions and operators
+
+CREATE FUNCTION semver_lt(semver, semver)
+    RETURNS bool
+    AS 'MODULE_PATHNAME', 'semver_lt'
+    LANGUAGE C IMMUTABLE STRICT;
+
+CREATE OPERATOR < (
+    LEFTARG = semver,
+    RIGHTARG = semver,
+    PROCEDURE = semver_lt,
+    COMMUTATOR = >,
+    NEGATOR = >=
+);
+
+CREATE FUNCTION semver_le(semver, semver)
+    RETURNS bool
+    AS 'MODULE_PATHNAME', 'semver_le'
+    LANGUAGE C IMMUTABLE STRICT;
+
+CREATE OPERATOR <= (
+    LEFTARG = semver,
+    RIGHTARG = semver,
+    PROCEDURE = semver_le,
+    COMMUTATOR = >=,
+    NEGATOR = >
+);
+
+CREATE FUNCTION semver_eq(semver, semver)
+    RETURNS bool
+    AS 'MODULE_PATHNAME', 'semver_eq'
+    LANGUAGE C IMMUTABLE STRICT;
+
+CREATE OPERATOR = (
+    LEFTARG = semver,
+    RIGHTARG = semver,
+    PROCEDURE = semver_eq,
+    COMMUTATOR = =,
+    NEGATOR = <>
+);
