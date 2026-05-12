@@ -101,3 +101,39 @@ Datum semver_eq(PG_FUNCTION_ARGS)
     Semver *b = (Semver *) PG_GETARG_POINTER(1);
     PG_RETURN_BOOL(semver_compare(a, b) == 0);
 }
+
+/* semver_ne: not equal */
+PG_FUNCTION_INFO_V1(semver_ne);
+Datum semver_ne(PG_FUNCTION_ARGS)
+{
+    Semver *a = (Semver *) PG_GETARG_POINTER(0);
+    Semver *b = (Semver *) PG_GETARG_POINTER(1);
+    PG_RETURN_BOOL(semver_compare(a,b) != 0);
+}
+
+/* semver_ge: greater than or equal */
+PG_FUNCTION_INFO_V1(semver_ge);
+Datum semver_ge(PG_FUNCTION_ARGS)
+{
+    Semver *a = (Semver *) PG_GETARG_POINTER(0);
+    Semver *b = (Semver *) PG_GETARG_POINTER(1);
+    PG_RETURN_BOOL(semver_compare(a,b) >= 0);
+}
+
+/* semver_gt: greater than */
+PG_FUNCTION_INFO_V1(semver_gt);
+Datum semver_gt(PG_FUNCTION_ARGS)
+{
+    Semver *a = (Semver *) PG_GETARG_POINTER(0);
+    Semver *b = (Semver *) PG_GETARG_POINTER(1);
+    PG_RETURN_BOOL(semver_compare(a,b) > 0);
+}
+
+/* semver_cmp: returns integer for sort ordering */
+PG_FUNCTION_INFO_V1(semver_cmp);
+Datum semver_cmp(PG_FUNCTION_ARGS)
+{
+    Semver *a = (Semver *) PG_GETARG_POINTER(0);
+    Semver *b = (Semver *) PG_GETARG_POINTER(1);
+    PG_RETURN_INT32(semver_compare(a,b));
+}

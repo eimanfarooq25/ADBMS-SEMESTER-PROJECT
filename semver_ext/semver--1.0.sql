@@ -1,16 +1,15 @@
 -- semver--1.0.sql
-
 CREATE TYPE semver;
 
 CREATE FUNCTION semver_in(cstring)
-RETURNS semver
-AS 'MODULE_PATHNAME', 'semver_in'
-LANGUAGE C IMMUTABLE STRICT;
+    RETURNS semver
+    AS 'MODULE_PATHNAME', 'semver_in'
+    LANGUAGE C IMMUTABLE STRICT;
 
 CREATE FUNCTION semver_out(semver)
-RETURNS cstring
-AS 'MODULE_PATHNAME', 'semver_out'
-LANGUAGE C IMMUTABLE STRICT;
+    RETURNS cstring
+    AS 'MODULE_PATHNAME', 'semver_out'
+    LANGUAGE C IMMUTABLE STRICT;
 
 CREATE TYPE semver (
     INPUT = semver_in,
@@ -18,7 +17,6 @@ CREATE TYPE semver (
     INTERNALLENGTH = 12,
     ALIGNMENT = int4
 );
--- Phase 2: Ezzah -- comparison functions and operators
 
 CREATE FUNCTION semver_lt(semver, semver)
     RETURNS bool
@@ -26,11 +24,8 @@ CREATE FUNCTION semver_lt(semver, semver)
     LANGUAGE C IMMUTABLE STRICT;
 
 CREATE OPERATOR < (
-    LEFTARG = semver,
-    RIGHTARG = semver,
-    PROCEDURE = semver_lt,
-    COMMUTATOR = >,
-    NEGATOR = >=
+    LEFTARG = semver, RIGHTARG = semver,
+    PROCEDURE = semver_lt, COMMUTATOR = >, NEGATOR = >=
 );
 
 CREATE FUNCTION semver_le(semver, semver)
@@ -39,11 +34,8 @@ CREATE FUNCTION semver_le(semver, semver)
     LANGUAGE C IMMUTABLE STRICT;
 
 CREATE OPERATOR <= (
-    LEFTARG = semver,
-    RIGHTARG = semver,
-    PROCEDURE = semver_le,
-    COMMUTATOR = >=,
-    NEGATOR = >
+    LEFTARG = semver, RIGHTARG = semver,
+    PROCEDURE = semver_le, COMMUTATOR = >=, NEGATOR = >
 );
 
 CREATE FUNCTION semver_eq(semver, semver)
@@ -52,9 +44,41 @@ CREATE FUNCTION semver_eq(semver, semver)
     LANGUAGE C IMMUTABLE STRICT;
 
 CREATE OPERATOR = (
-    LEFTARG = semver,
-    RIGHTARG = semver,
-    PROCEDURE = semver_eq,
-    COMMUTATOR = =,
-    NEGATOR = <>
+    LEFTARG = semver, RIGHTARG = semver,
+    PROCEDURE = semver_eq, COMMUTATOR = =, NEGATOR = <>
 );
+
+CREATE FUNCTION semver_ne(semver, semver)
+    RETURNS bool
+    AS 'MODULE_PATHNAME', 'semver_ne'
+    LANGUAGE C IMMUTABLE STRICT;
+
+CREATE OPERATOR <> (
+    LEFTARG = semver, RIGHTARG = semver,
+    PROCEDURE = semver_ne, COMMUTATOR = <>, NEGATOR = =
+);
+
+CREATE FUNCTION semver_ge(semver, semver)
+    RETURNS bool
+    AS 'MODULE_PATHNAME', 'semver_ge'
+    LANGUAGE C IMMUTABLE STRICT;
+
+CREATE OPERATOR >= (
+    LEFTARG = semver, RIGHTARG = semver,
+    PROCEDURE = semver_ge, COMMUTATOR = <=, NEGATOR = <
+);
+
+CREATE FUNCTION semver_gt(semver, semver)
+    RETURNS bool
+    AS 'MODULE_PATHNAME', 'semver_gt'
+    LANGUAGE C IMMUTABLE STRICT;
+
+CREATE OPERATOR > (
+    LEFTARG = semver, RIGHTARG = semver,
+    PROCEDURE = semver_gt, COMMUTATOR = <, NEGATOR = <=
+);
+
+CREATE FUNCTION semver_cmp(semver, semver)
+    RETURNS integer
+    AS 'MODULE_PATHNAME', 'semver_cmp'
+    LANGUAGE C IMMUTABLE STRICT;
